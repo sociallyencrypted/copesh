@@ -1,4 +1,9 @@
-copesh: src/copesh.c
+copesh: src/copesh.c date
 	gcc -o copesh src/copesh.c
+date: src/date.c
+	gcc -o date src/date.c
 clean:
-	rm copesh
+	rm -f copesh
+	rm -f date
+test: test/SimpleFork.c
+	gcc -o SimpleFork test/SimpleFork.c
