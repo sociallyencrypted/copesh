@@ -14,13 +14,12 @@ void shell_run_pthread(char *command)
     pthread_join(thread_id, NULL);
 }
 
-void shell_run(char *command)
+void shell_run(char *command, char *args[10])
 {
     pid_t pid = fork();
     if (pid == 0)
     {
-        // child process
-        if (execl(command, command, NULL) == -1)
+        if (execv(command, args) == -1)
         {
             perror("copesh");
         }
@@ -28,13 +27,10 @@ void shell_run(char *command)
     }
     else if (pid < 0)
     {
-        // error forking
         perror("copesh");
     }
     else
     {
-        // parent process
-        // wait for child to terminate
         wait(NULL);
     }
 }
@@ -44,21 +40,49 @@ int main(int argc, char **argv)
     char *username = getenv("USER");
     printf("Logged in as %s\n", username);
     char *currentDirectory = getcwd(NULL, 0);
+    char *permaPath = currentDirectory;
     printf("copesh v1.0.0\n");
     printf("Type 'help' for a list of commands\n");
     char *commands[10] = {"exit", "help", "pwd", "cd", "echo", "ls", "cat", "date", "rm", "mkdir"};
     while (1)
     {
         printf("$%s -> %s ", username, currentDirectory);
-        char input[100];
-        scanf("%[^\n]%*c", input);
-        // if input not in commands, raise error
-        if (strcmp(input, "exit") == 0)
+        // input command and arguments
+        char *command = malloc(100 * sizeof(char));
+        scanf("%[^\n]%*c", command);
+        // arguments
+        char *arguments[10];
+        int i = 0;
+        char *token = strtok(command, " ");
+        while (token != NULL)
+        {
+            arguments[i] = token;
+            i++;
+            token = strtok(NULL, " ");
+        }
+        arguments[i] = NULL;
+        // check if command is valid
+        int valid = 0;
+        for (int j = 0; j < 10; j++)
+        {
+            if (strcmp(arguments[0], commands[j]) == 0)
+            {
+                valid = 1;
+                break;
+            }
+        }
+        if (valid == 0)
+        {
+            printf("Invalid command\n");
+            continue;
+        }
+        // exit
+        if (strcmp(arguments[0], "exit") == 0)
         {
             printf("Session ended\n");
-            return 0;
+            exit(0);
         }
-        else if (strcmp(input, "help") == 0)
+        else if (strcmp(arguments[0], "help") == 0)
         {
             printf("copesh v1.0.0\n");
             printf("List of commands:\n");
@@ -67,25 +91,50 @@ int main(int argc, char **argv)
                 printf("%s\n", commands[i]);
             }
         }
-        else if (strcmp(input, "pwd") == 0)
+        else if (strcmp(arguments[0], "pwd") == 0)
         {
             printf("%s\n", currentDirectory);
         }
-        else if (strcmp(input, "date") == 0)
+        else if (strcmp(arguments[0], "cd") == 0)
         {
-            shell_run_pthread("./date");
+            if (chdir(arguments[1]) == 0)
+            {
+                currentDirectory = getcwd(NULL, 0);
+            }
+            else
+            {
+                perror("copesh");
+            }
         }
-        else if (strcmp(input, "ls") == 0)
+        else if (strcmp(arguments[0], "echo") == 0)
         {
-            shell_run("./ls");
-        }
-        else if (strcmp(input, "mkdir") == 0)
-        {
-            shell_run_pthread("./mkdir");
+            for (int i = 1; i < 10; i++)
+            {
+                if (arguments[i] != NULL)
+                {
+                    char *arg = arguments[i];
+                    int len = strlen(arg);
+                    if (arg[0] == '"' && arg[len - 1] == '"')
+                    {
+                        arg[len - 1] = '\0';
+                        arg++;
+                    }
+                    printf("%s ", arg);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            printf("\n");
         }
         else
         {
-            printf("Error: Command not found\n");
+            char *commandPath = malloc(1024 * sizeof(char));
+            strcpy(commandPath, permaPath);
+            strcat(commandPath, "/");
+            strcat(commandPath, arguments[0]);
+            shell_run(commandPath, arguments);
         }
     }
 }
