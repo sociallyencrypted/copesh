@@ -1,4 +1,4 @@
-copesh: src/copesh.c date ls cat mkdir
+copesh: src/copesh.c date ls cat mkdir rm
 	gcc -o copesh src/copesh.c
 date: src/date.c
 	gcc -o date src/date.c

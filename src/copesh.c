@@ -12,15 +12,31 @@
 
 // global variables
 
-void shell_run_pthread(char *command)
+void shell_run_pthread(char *command, char *args[10])
 {
+    // printf("\nRunning through shell_run_pthread...\n");
     pthread_t thread_id;
-    pthread_create(&thread_id, NULL, system, command);
+    char *commandWithArgs = malloc(100);
+    strcpy(commandWithArgs, command);
+    for (int i = 1; i < 10; i++)
+    {
+        if (args[i] != NULL)
+        {
+            strcat(commandWithArgs, " ");
+            strcat(commandWithArgs, args[i]);
+        }
+        else
+        {
+            break;
+        }
+    }
+    pthread_create(&thread_id, NULL, system, commandWithArgs);
     pthread_join(thread_id, NULL);
 }
 
 void shell_run(char *command, char *args[10])
 {
+    // printf("\nRunning through shell_run...\n");
     pid_t pid = fork();
     if (pid == 0)
     {
@@ -76,7 +92,14 @@ int main(int argc, char **argv)
             token = strtok(NULL, " ");
         }
         arguments[i] = NULL;
-
+        int pthreadFlag = 0;
+        int commandSize = strlen(arguments[0]);
+        if (arguments[0][commandSize - 2] == '&' && arguments[0][commandSize - 1] == 't')
+        {
+            pthreadFlag = 1;
+            arguments[0][commandSize - 2] = '\0';
+            arguments[0][commandSize - 1] = '\0';
+        }
         int valid = 0;
         for (int j = 0; j < 10; j++)
         {
@@ -91,7 +114,7 @@ int main(int argc, char **argv)
             printf("Invalid command\n");
             continue;
         }
-        // exit
+
         if (strcmp(arguments[0], "exit") == 0)
         {
             printf("Session ended\n");
@@ -149,7 +172,14 @@ int main(int argc, char **argv)
             strcpy(commandPath, permaPath);
             strcat(commandPath, "/");
             strcat(commandPath, arguments[0]);
-            shell_run(commandPath, arguments);
+            if (pthreadFlag == 1)
+            {
+                shell_run_pthread(commandPath, arguments);
+            }
+            else
+            {
+                shell_run(commandPath, arguments);
+            }
         }
     }
 }
