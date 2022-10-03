@@ -1,8 +1,13 @@
 #include <stdio.h>
+
 #include <string.h>
+
 #include <stdlib.h>
+
 #include <unistd.h>
+
 #include <sys/wait.h>
+
 #include <pthread.h>
 
 // global variables
@@ -43,14 +48,24 @@ int main(int argc, char **argv)
     char *permaPath = currentDirectory;
     printf("copesh v1.0.0\n");
     printf("Type 'help' for a list of commands\n");
-    char *commands[10] = {"exit", "help", "pwd", "cd", "echo", "ls", "cat", "date", "rm", "mkdir"};
+    char *commands[10] = {
+        "exit",
+        "help",
+        "pwd",
+        "cd",
+        "echo",
+        "ls",
+        "cat",
+        "date",
+        "rm",
+        "mkdir"};
     while (1)
     {
         printf("$%s -> %s ", username, currentDirectory);
-        // input command and arguments
+
         char *command = malloc(100 * sizeof(char));
         scanf("%[^\n]%*c", command);
-        // arguments
+
         char *arguments[10];
         int i = 0;
         char *token = strtok(command, " ");
@@ -61,7 +76,7 @@ int main(int argc, char **argv)
             token = strtok(NULL, " ");
         }
         arguments[i] = NULL;
-        // check if command is valid
+
         int valid = 0;
         for (int j = 0; j < 10; j++)
         {
