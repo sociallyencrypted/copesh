@@ -3,10 +3,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <pthread.h>
 
 // global variables
-char *user;
-char currentDirectory[100] = "/home/";
+
+void shell_run_pthread(char *command)
+{
+    pthread_t thread_id;
+    pthread_create(&thread_id, NULL, system, command);
+    pthread_join(thread_id, NULL);
+}
 
 void shell_run(char *command)
 {
@@ -33,36 +39,19 @@ void shell_run(char *command)
     }
 }
 
-char *login()
-{
-    while (1)
-    {
-        char username[100];
-        printf("Username: ");
-        if (fgets(username, 100, stdin) == NULL)
-        {
-            printf("Error: Username too long");
-        }
-        else
-        {
-            strtok(username, "\n");
-            return username;
-        }
-    }
-}
-
 int main(int argc, char **argv)
 {
+    char *username = getenv("USER");
+    printf("Logged in as %s\n", username);
+    char *currentDirectory = getcwd(NULL, 0);
     printf("copesh v1.0.0\n");
     printf("Type 'help' for a list of commands\n");
-    user = login();
-    strcat(currentDirectory, user);
-    char *commands[11] = {"exit", "help", "login", "pwd", "cd", "echo", "ls", "cat", "date", "rm", "mkdir"};
+    char *commands[10] = {"exit", "help", "pwd", "cd", "echo", "ls", "cat", "date", "rm", "mkdir"};
     while (1)
     {
-        printf("copesh:~ %s$ ", user);
+        printf("$%s -> %s ", username, currentDirectory);
         char input[100];
-        scanf("%s", input);
+        scanf("%[^\n]%*c", input);
         // if input not in commands, raise error
         if (strcmp(input, "exit") == 0)
         {
@@ -73,17 +62,10 @@ int main(int argc, char **argv)
         {
             printf("copesh v1.0.0\n");
             printf("List of commands:\n");
-            for (int i = 0; i < 11; i++)
+            for (int i = 0; i < 10; i++)
             {
                 printf("%s\n", commands[i]);
             }
-        }
-        else if (strcmp(input, "login") == 0)
-        {
-            getchar(); // remove newline
-            user = login();
-            strncpy(currentDirectory, "/home/", 7);
-            strcat(currentDirectory, user);
         }
         else if (strcmp(input, "pwd") == 0)
         {
@@ -91,7 +73,15 @@ int main(int argc, char **argv)
         }
         else if (strcmp(input, "date") == 0)
         {
-            shell_run("date");
+            shell_run_pthread("./date");
+        }
+        else if (strcmp(input, "ls") == 0)
+        {
+            shell_run("./ls");
+        }
+        else if (strcmp(input, "mkdir") == 0)
+        {
+            shell_run_pthread("./mkdir");
         }
         else
         {
