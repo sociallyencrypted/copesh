@@ -17,5 +17,3 @@ clean:
 	rm -f mkdir
 	rm -f cat
 	rm -f rm
-test: test/SimpleFork.c
-	gcc -o SimpleFork test/SimpleFork.c
