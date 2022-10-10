@@ -9,7 +9,6 @@
 #include <sys/wait.h>
 
 #include <pthread.h>
-
 // global variables
 
 void shell_run_pthread(char *command, char *args[10])
@@ -60,8 +59,11 @@ int main(int argc, char **argv)
 {
     char *username = getenv("USER");
     printf("Logged in as %s\n", username);
-    char *currentDirectory = getcwd(NULL, 0);
-    char *permaPath = currentDirectory;
+    char *permaPath = getcwd(NULL, 0);
+    char *homeDirectory = getenv("HOME");
+    strcspn(homeDirectory, "\n");
+    chdir(homeDirectory);
+    char *currentDirectory = homeDirectory;
     printf("copesh v1.0.0\n");
     printf("Type 'help' for a list of commands\n");
     char *commands[10] = {
@@ -77,8 +79,13 @@ int main(int argc, char **argv)
         "mkdir"};
     while (1)
     {
-        printf("$%s -> %s ", username, currentDirectory);
-
+        if (strcmp(currentDirectory, homeDirectory)==0){
+            printf("$%s -> ~ ", username);
+        }
+        else{
+            
+            printf("$%s -> %s ", username, currentDirectory);
+        }
         char *command = malloc(100 * sizeof(char));
         scanf("%[^\n]%*c", command);
 
