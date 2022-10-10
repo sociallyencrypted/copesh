@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     FILE *file = fopen(argv[argc - 1], "r");
     if (file == NULL)
     {
-        printf("Error opening file %s", argv[1]);
+        perror("cat");
         exit(1);
     }
     char *line = NULL;
