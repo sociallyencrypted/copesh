@@ -83,8 +83,8 @@ int main(int argc, char **argv)
             printf("$%s -> ~ ", username);
         }
         else{
-            
-            printf("$%s -> %s ", username, currentDirectory);
+            char* dirName = strrchr(currentDirectory, '/')+1;
+            printf("$%s -> %s ", username, dirName);
         }
         char *command = malloc(100 * sizeof(char));
         scanf("%[^\n]%*c", command);
