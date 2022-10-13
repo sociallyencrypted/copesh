@@ -36,21 +36,21 @@ int main(int argc, char *argv[])
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     // Format: Mon Oct  3 11:28:53 IST 2022
-    int dayConsidered = tm.tm_mday;
+    int dayConsidered = tm.tm_wday;
     int monthConsidered = tm.tm_mon;
     if (flag_r == 1)
     {
         // time from epoch
         t = timeFromEpoch;
         tm = *localtime(&t);
-        dayConsidered = tm.tm_mday;
+        dayConsidered = tm.tm_wday;
         monthConsidered = tm.tm_mon;
     }
     if (flag_u == 1)
     {
         // convert time to UTC
         tm = *gmtime(&t);
-        dayConsidered = tm.tm_mday;
+        dayConsidered = tm.tm_wday;
         monthConsidered = tm.tm_mon;
     }
     char *day;
