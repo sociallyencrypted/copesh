@@ -8,6 +8,10 @@ int main(int argc, char **argv)
 {
     int flag_n = 0;
     int flag_s = 0;
+    if (argc == 1){
+        printf("Usage: cation [-n] [-s] [args]\n");
+        exit(1);
+    }
     if (argc > 2)
     {
         if (strcmp(argv[1], "-n") == 0 || strcmp(argv[1], "-ns") == 0 || strcmp(argv[1], "-sn") == 0)
