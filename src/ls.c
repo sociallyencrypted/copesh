@@ -4,11 +4,12 @@
 #include <unistd.h>
 #include <dirent.h>
 
-void printDirectoryFiles(int flag_a, int flag_R, char *currentDirectory)
+void printDirectoryFiles(int flag_a, int flag_R, char *currentDirectory, char* originalDirectory)
 {
-    DIR **subdirs = subdirs = (DIR **)malloc(1 * sizeof(DIR *));
     DIR *dir = opendir(currentDirectory);
     struct dirent *entry;
+    char **subdirectories = malloc(1*sizeof(char *));
+    subdirectories[0] = NULL;
     while ((entry = readdir(dir)) != NULL)
     {
         if (flag_a == 0)
@@ -18,16 +19,45 @@ void printDirectoryFiles(int flag_a, int flag_R, char *currentDirectory)
                 continue;
             }
         }
-        printf("%s ", entry->
-        d_name);
-        if (flag_R == 1 && entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0 && strcmp(entry->d_name, ".git") != 0)
+        printf("%s ", entry->d_name);
+        if (flag_R == 1 && entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0 && entry->d_name != NULL)
         {
-            printf("\n%s :\n", entry->d_name);
-            char buffer[1024];
-            printDirectoryFiles(flag_a, flag_R, realpath(entry->d_name, buffer));
+            // add all subdirectories to the char* list subdirectories
+            // then call printDirectoryFiles on each subdirectory
+            int i = 0;
+            while (subdirectories[i] != NULL)
+            {
+                i++;
+            }
+            subdirectories = realloc(subdirectories, (i+2)*sizeof(char *));
+            subdirectories[i] = malloc(100);
+            strcpy(subdirectories[i], currentDirectory);
+            strcat(subdirectories[i], "/");
+            strcat(subdirectories[i], entry->d_name);
+            subdirectories[i+1] = NULL;
         }
     }
     printf("\n");
+    // print the subdirs
+    if (flag_R == 1){
+        printf("\n");
+        int i = 0;
+        while (subdirectories[i] != NULL)
+        {
+            // print relative path to originalDirectory
+            char *relativePath = malloc((strlen(subdirectories[i])+1)*sizeof(char));
+            strcpy(relativePath, subdirectories[i]);
+            int j = strlen(originalDirectory)+1;
+            while (relativePath[j] != '\0')
+            {
+                printf("%c", relativePath[j]);
+                j++;
+            }
+            printf(":\n");
+            printDirectoryFiles(flag_a, flag_R, subdirectories[i], originalDirectory);
+            i++;
+        }
+    }
     closedir(dir);
 }
 
@@ -47,6 +77,7 @@ int main(int argc, char **argv)
         }
     }
     char *currentDirectory = getcwd(NULL, 0);
-    printDirectoryFiles(flag_a, flag_R, currentDirectory);
+    char *originalDirectory = getcwd(NULL, 0);
+    printDirectoryFiles(flag_a, flag_R, currentDirectory, originalDirectory);
     return 0;
 }
