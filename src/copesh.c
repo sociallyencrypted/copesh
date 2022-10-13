@@ -142,6 +142,13 @@ int main(int argc, char **argv)
         }
         else if (strcmp(arguments[0], "cd") == 0)
         {
+            if (arguments[1][0] == '~')
+            {
+                char *temp = malloc(100 * sizeof(char));
+                strcpy(temp, homeDirectory);
+                strcat(temp, arguments[1] + 1);
+                strcpy(arguments[1], temp);
+            }
             if (chdir(arguments[1]) == 0)
             {
                 currentDirectory = getcwd(NULL, 0);

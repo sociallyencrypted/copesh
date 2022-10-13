@@ -18,7 +18,6 @@ void printDirectoryFiles(int flag_a, int flag_R, char *currentDirectory)
                 continue;
             }
         }
-        // print long file names if flag_l==1
         printf("%s ", entry->
         d_name);
         if (flag_R == 1 && entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0 && strcmp(entry->d_name, ".git") != 0)
