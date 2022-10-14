@@ -4,8 +4,8 @@
     - [x] ls
     - [x] mkdir
     - [x] echo
-- [ ] Make options
+- [x] Make options
     - [x] cd
     - [x] echo
-    - [ ] pwd
+    - [x] pwd
 - [ ] Write documentation
