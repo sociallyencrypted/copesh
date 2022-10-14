@@ -12,7 +12,7 @@ make
 
 ## Usage
 ```bash
-copesh
+./copesh
 ```
 
 ## Commands
