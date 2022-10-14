@@ -86,6 +86,7 @@ int main(int argc, char **argv)
                 if (directoryCount == 100)
                 {
                     printf("Too many directories to list. Please list no more than 100 directories.\n");
+                    exit(1);
                 }
             }
         }
