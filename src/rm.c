@@ -20,6 +20,14 @@ int main(int argc, char **argv)
     if (argc>1)
     {
         for (int i = 1; i < argc; i++){
+            if (strcmp(argv[1], "--help")==0){
+                printf("rm: rm [-r] [-d] [args]\n");
+                printf("Remove files or directories.\n");
+                printf("Options:\n");
+                printf("  -r\t\tRemove directories and their contents recursively.\n");
+                printf("  -d\t\tRemove empty directories.\n");
+                exit(0);
+            }
             if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "-rd") == 0 || strcmp(argv[i], "-fd") == 0)
             {
                 flag_r = 1;

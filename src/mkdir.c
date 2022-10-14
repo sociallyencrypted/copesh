@@ -19,6 +19,14 @@ int main(int argc, char **argv)
         exit(1);
     }
     if (argc==2){
+        if (strcmp(argv[1], "--help")==0){
+            printf("mkdir: mkdir [-m mode] [-p] [args]\n");
+            printf("Create directories.\n");
+            printf("Options:\n");
+            printf("  -m\t\tSet the mode of the created directory.\n");
+            printf("  -p\t\tCreate parent directories as needed.\n");
+            exit(0);
+        }
         if (strcmp(argv[1],"-p")==0 || strcmp(argv[1],"-m")==0 || strcmp(argv[1],"-mp")==0 || strcmp(argv[1],"-pm")==0){
             printf("Usage: mkdir [-m mode] [-p] [args]\n");
             exit(1);
@@ -35,6 +43,14 @@ int main(int argc, char **argv)
     {
         for (int i = 1; i < argc; i++)
         {
+            if (strcmp(argv[1], "--help")==0){
+                printf("mkdir: mkdir [-m mode] [-p] [args]\n");
+                printf("Create directories.\n");
+                printf("Options:\n");
+                printf("  -m\t\tSet the mode of the created directory.\n");
+                printf("  -p\t\tCreate parent directories as needed.\n");
+                exit(0);
+            }
             if (strncmp(argv[i], "-m", 2) == 0 || strncmp(argv[i], "-mp", 3) == 0 || strncmp(argv[i], "-pm", 3) == 0 || strncmp(argv[i], "--mode", 6) == 0)
             {
                 flag_m = 1;

@@ -8,4 +8,4 @@
     - [x] cd
     - [x] echo
     - [x] pwd
-- [ ] Write documentation
+- [x] Write documentation

@@ -13,6 +13,14 @@ int main(int argc, char *argv[])
     {
         for (int i = 1; i < argc; i++)
         {
+            if (strcmp(argv[i], "--help")==0){
+                printf("date: date [-r] [-u] [args]\n");
+                printf("Print or set the system date and time.\n");
+                printf("Options:\n");
+                printf("  -r\t\tPrint the time in seconds since the Epoch.\n");
+                printf("  -u\t\tPrint or set Coordinated Universal Time (UTC).\n");
+                exit(0);
+            }
             if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "-ru") == 0 || strcmp(argv[i], "-ur") == 0)
             {
                 flag_r = 1;

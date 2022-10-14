@@ -71,6 +71,14 @@ int main(int argc, char **argv)
     {
         for (int i = 1; i < argc; i++)
         {
+            if (strcmp(argv[i], "--help")==0){
+                printf("ls: ls [-a] [-R] [args]\n");
+                printf("List information about the FILEs (the current directory by default).\n");
+                printf("Options:\n");
+                printf("  -a, --all             do not ignore entries starting with .\n");
+                printf("  -R, --recursive       list subdirectories recursively\n");
+                exit(0);
+            }
             if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-aR") == 0 || strcmp(argv[i], "-Ra") == 0)
             {
                 flag_a = 1;
