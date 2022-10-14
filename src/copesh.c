@@ -166,10 +166,12 @@ int main(int argc, char **argv)
                 {
                     char *arg = arguments[i];
                     int len = strlen(arg);
-                    if (arg[0] == '"' && arg[len - 1] == '"')
-                    {
-                        arg[len - 1] = '\0';
+                    if (arg[0] == '"' || arg[0]=='\''){
                         arg++;
+                        len--;
+                    }
+                    if (arg[len-1] == '"' || arg[len-1]=='\''){
+                        arg[len-1] = '\0';
                     }
                     printf("%s ", arg);
                 }
