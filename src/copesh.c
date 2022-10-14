@@ -139,7 +139,38 @@ int main(int argc, char **argv)
         }
         else if (strcmp(arguments[0], "pwd") == 0)
         {
-            printf("%s\n", currentDirectory);
+            char flagSymb = 'L';
+            for (int i=1; i<100; i++){
+                if (arguments[i] == NULL){
+                    break;
+                }
+                else if (strcmp(arguments[i], "--help")==0){
+                    printf("pwd: pwd[-L|-P]\n");
+                    printf("Prints the current working directory\n");
+                    printf("Options:\n");
+                    printf("-L: print the value of $PWD if it names the current working directory\n");
+                    printf("-P: print the physical directory, without any symbolic links\n");
+                    break;
+                }
+                else if (strcmp(arguments[i], "-L")==0){
+                    flagSymb = 'L';
+                }
+                else if (strcmp(arguments[i], "-P")==0){
+                    flagSymb = 'P';
+                }
+                else{
+                    printf("Invalid option\n");
+                    break;
+                }
+            }
+            if (flagSymb == 'L'){
+                char* pwd = getenv("PWD");
+                printf("%s\n", pwd);
+            }
+            else if (flagSymb == 'P'){
+                char* pwd = getcwd(NULL, 0);
+                printf("%s\n", pwd);
+            }
         }
         else if (strcmp(arguments[0], "cd") == 0)
         {
@@ -210,6 +241,7 @@ int main(int argc, char **argv)
                     }
                     else{
                         currentDirectory = getcwd(NULL, 0);
+
                     }
                     break;
                 }
