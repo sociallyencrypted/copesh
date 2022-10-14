@@ -89,7 +89,7 @@ int main(int argc, char **argv)
         char *command = malloc(100 * sizeof(char));
         scanf("%[^\n]%*c", command);
 
-        char *arguments[10];
+        char *arguments[100];
         int i = 0;
         char *token = strtok(command, " ");
         while (token != NULL)
@@ -135,6 +135,7 @@ int main(int argc, char **argv)
             {
                 printf("%s\n", commands[i]);
             }
+            printf("For help related to each command, type <command> --help\n");
         }
         else if (strcmp(arguments[0], "pwd") == 0)
         {
@@ -142,27 +143,98 @@ int main(int argc, char **argv)
         }
         else if (strcmp(arguments[0], "cd") == 0)
         {
-            if (arguments[1][0] == '~')
-            {
-                char *temp = malloc(100 * sizeof(char));
-                strcpy(temp, homeDirectory);
-                strcat(temp, arguments[1] + 1);
-                strcpy(arguments[1], temp);
-            }
-            if (chdir(arguments[1]) == 0)
-            {
-                currentDirectory = getcwd(NULL, 0);
-            }
-            else
-            {
-                perror("copesh");
+            for (int i=1; i<100; i++){
+                char flagDotDot = 'L';
+                if (arguments[i] == NULL){
+                    break;
+                }
+                else if (strcmp(arguments[i], "--help") == 0){
+                    printf("cd: cd [-L|-P][directory]\n");
+                    printf("Change the current directory to [directory].\n");
+                    printf("If [directory] is not specified, change to the home directory.\n");
+                    printf("If [directory] is .., change to the previous directory.\n");
+                    printf("Options:");
+                    printf("  -L  Handle dot-dot logically.\n");
+                    printf("      This is the default behavior.\n");
+                    printf("  -P  Handle dot-dot physically.\n");
+                    break;
+                }
+                else if (strcmp(arguments[i], "-L") == 0){
+                    flagDotDot = 'L';
+                }
+                else if (strcmp(arguments[i], "-P") == 0){
+                    flagDotDot = 'P';
+                }
+                else if (strncmp(arguments[i], "~", 1) == 0)
+                {
+                    char *temp = malloc(100 * sizeof(char));
+                    strcpy(temp, homeDirectory);
+                    strcat(temp, arguments[i] + 1);
+                    strcpy(arguments[i], temp);
+                    if (chdir(arguments[i]) == -1)
+                    {
+                        perror("copesh");
+                    }
+                    else
+                    {
+                        currentDirectory = getcwd(NULL, 0);
+                    }
+                    break;
+                }
+                else if (strcmp(arguments[i], "..") == 0){
+                    if (flagDotDot == 'L'){
+                        char* temp = strrchr(currentDirectory, '/');
+                        *temp = '\0';
+                    }
+                    else if (flagDotDot == 'P'){
+                        char* temp = strrchr(currentDirectory, '/');
+                        *temp = '\0';
+                        temp = strrchr(currentDirectory, '/');
+                        *temp = '\0';
+                    }
+                    if (chdir(currentDirectory) == -1){
+                        perror("copesh");
+                    }
+                    else{
+                        currentDirectory = getcwd(NULL, 0);
+                    }
+                    break;
+                }
+                else{
+                    char* path = malloc(100 * sizeof(char));
+                    strcpy(path, currentDirectory);
+                    strcat(path, "/");
+                    strcat(path, arguments[i]);
+                    if (chdir(path) == -1){
+                        perror("copesh");
+                    }
+                    else{
+                        currentDirectory = getcwd(NULL, 0);
+                    }
+                    break;
+                }
             }
         }
         else if (strcmp(arguments[0], "echo") == 0)
         {
-            for (int i = 1; i < 10; i++)
+            int flag_n = 0;
+            for (int i = 1; i < 100; i++)
             {
-                if (arguments[i] != NULL)
+                if (arguments[i] == NULL)
+                {
+                    break;
+                }
+                else if (strcmp(arguments[i], "--help") == 0){
+                    printf("Usage: echo [STRING]...\n");
+                    printf("Echo the STRING(s) to standard output.\n");
+                    printf("Options:\n");
+                    printf("  -n     do not output the trailing newline\n");
+                    break;
+                }
+                else if (strcmp(arguments[i],"-n")==0){
+                    flag_n = 1;
+                }
+                else
                 {
                     char *arg = arguments[i];
                     int len = strlen(arg);
@@ -175,12 +247,10 @@ int main(int argc, char **argv)
                     }
                     printf("%s ", arg);
                 }
-                else
-                {
-                    break;
-                }
             }
-            printf("\n");
+            if (flag_n == 0){
+                printf("\n");
+            }
         }
         else
         {

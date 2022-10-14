@@ -1,11 +1,11 @@
-- [ ] Add support for multiple files in all commands
+- [x] Add support for multiple files in all commands
     - [x] cation
-    - [ ] rm
+    - [x] rm
     - [x] ls
     - [x] mkdir
     - [x] echo
 - [ ] Make options
-    - [ ] cd
-    - [ ] echo
+    - [x] cd
+    - [x] echo
     - [ ] pwd
 - [ ] Write documentation
