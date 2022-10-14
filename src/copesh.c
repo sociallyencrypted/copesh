@@ -29,7 +29,7 @@ void shell_run_pthread(char *command, char *args[10])
             break;
         }
     }
-    pthread_create(&thread_id, NULL, system, commandWithArgs);
+    pthread_create(&thread_id, NULL, (void *)system, commandWithArgs);
     pthread_join(thread_id, NULL);
 }
 

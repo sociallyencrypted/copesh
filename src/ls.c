@@ -63,21 +63,48 @@ void printDirectoryFiles(int flag_a, int flag_R, char *currentDirectory, char* o
 
 int main(int argc, char **argv)
 {
+    int directoryCount = 0;
     int flag_a = 0;
     int flag_R = 0;
+    char *directoriesToBeListed[100];
     if (argc > 1)
     {
-        if (strcmp(argv[1], "-a") == 0 || strcmp(argv[1], "-aR") == 0 || strcmp(argv[1], "-Ra") == 0)
+        for (int i = 1; i < argc; i++)
         {
-            flag_a = 1;
-        }
-        if (strcmp(argv[1], "-R") == 0 || strcmp(argv[1], "-Ra") == 0 || strcmp(argv[1], "-aR") == 0)
-        {
-            flag_R = 1;
+            if (strcmp(argv[i], "-a") == 0 || strcmp(argv[i], "-aR") == 0 || strcmp(argv[i], "-Ra") == 0)
+            {
+                flag_a = 1;
+            }
+            if (strcmp(argv[i], "-R") == 0 || strcmp(argv[i], "-Ra") == 0 || strcmp(argv[i], "-aR") == 0)
+            {
+                flag_R = 1;
+            }
+            else
+            {
+                directoriesToBeListed[directoryCount] = argv[i];
+                directoryCount++;
+                if (directoryCount == 100)
+                {
+                    printf("Too many directories to list. Please list no more than 100 directories.\n");
+                }
+            }
         }
     }
     char *currentDirectory = getcwd(NULL, 0);
     char *originalDirectory = getcwd(NULL, 0);
-    printDirectoryFiles(flag_a, flag_R, currentDirectory, originalDirectory);
+    if (directoryCount == 0){
+        printDirectoryFiles(flag_a, flag_R, currentDirectory, originalDirectory);
+    }
+    else
+    {
+        for (int i = 0; i < directoryCount; i++)
+        {
+            strcat(currentDirectory, "/");
+            strcat(currentDirectory, directoriesToBeListed[i]);
+            printf("%s:\n", directoriesToBeListed[i]);
+            printDirectoryFiles(flag_a, flag_R, currentDirectory, originalDirectory);
+            currentDirectory = getcwd(NULL, 0);
+        }
+    }
     return 0;
 }
